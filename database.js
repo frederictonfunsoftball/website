@@ -1,9 +1,9 @@
 var mysql = require('mysql');
 var pool;
 
-var env = "local";
+//var env = "local";
 //var env = "openShiftDev";
-//var env = "openShiftProd";
+var env = "openShiftProd";
 
 if(env == "local")
 {
@@ -34,8 +34,8 @@ else if (env == "openShiftProd")
     connectionLimit: 100,
     host: process.env.OPENSHIFT_MYSQL_DB_HOST,
     user: process.env.OPENSHIFT_MYSQL_DB_PORT,
-    password: '',
-    database: '',
+    password: 'adminTCgcYCU',
+    database: 'kA3l6IVkQLdH',
     debug: false
   });
 }
