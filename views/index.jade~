@@ -1,0 +1,37 @@
+extends layout 
+
+block append scripts
+
+block content
+  h2 Mission Statement
+  hr
+  p The goal of the league is to get as many people playing as possible. Other leagues offer competitive formats but these formats are not always welcoming to players of all skill levels. This league aims to fill that gap by providing a fun non-competitive league where players of all skill levels are welcome and can enjoy the game.
+  br
+  h2 Announcements
+  hr
+  p New Web Site! Some areas are still under construction.
+  br
+  h2 General Info
+  hr
+  h3 Who?
+  | -- Adult male or female players of all skill levels
+  h3 What?
+  | -- Co-ed slopitch softball
+  h3 Where?
+  | -- Various softball fields throughout Fredericton
+  h3 When?
+  | -- Tuesdays, Thursdays and/or Friday evenings from mid-May until mid-September
+  h3 Why?
+  | -- To be active
+  br
+  | -- To get outdoors
+  br
+  | -- To meet new people
+  br
+  | -- Why not?
+  br
+  br
+  h3 Interested?
+  | -- Contact the league for more info!
+  br
+  br
