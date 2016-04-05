@@ -1,0 +1,23 @@
+extends ./../layout
+
+block content
+  table(border=1)
+    tr
+      th
+        p Team ID
+      th
+        p Team Name
+      th
+        p Active
+      th
+        p Display ID
+    each team in teams
+      tr
+        td
+          p #{team.teamID}
+        td
+          p #{team.name}
+        td
+          p #{team.active}
+        td
+          p #{team.displayID}

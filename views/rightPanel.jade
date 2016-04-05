@@ -1,0 +1,24 @@
+p
+  script.
+    document.write(new moment().format("ddd, MMM Do, h:mm a"));
+hr
+br
+p Field Status
+hr
+ul
+  li
+    a(class='linkCancellation', href='https://twitter.com/CityFredRec', target= '_blank') Twitter: CityFredRec
+  li
+    a(class='linkCancellation', href='https://www.facebook.com/FrederictonRecreation?fref=ts', target= '_blank') Facebook: Fredericton Rec and Leisure
+br
+p
+  | Recent Scores:
+hr
+br
+p
+  | Upcoming Games:
+  hr
+  each nextGame in nextGames
+    div#recentGames
+      p #{nextGame.fieldName} - #{nextGame.dateTime}
+      p #{nextGame.awayName} vs. p #{nextGame.homeName}

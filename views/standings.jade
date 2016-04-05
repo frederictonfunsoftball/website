@@ -1,0 +1,88 @@
+extends layout
+
+block content
+  h2 League Standings
+  hr
+  h3 Division A Standings
+  hr
+  table(border=0, width="100%")
+    tr
+      th(class="standingsHeader") Team
+      th(class="standingsHeader") Division
+      th(class="standingsHeader") Games
+      th(class="standingsHeader") Wins
+      th(class="standingsHeader") Losses
+      th(class="standingsHeader") Ties
+      th(class="standingsHeader") Winning%
+      each record in standingsA
+        tr
+          td
+            p #{record.name}
+          td
+            p #{record.division}
+          td
+            p #{record.games}
+          td
+            p #{record.wins}
+          td
+            p #{record.ties}
+          td
+            p #{record.losses}
+          td
+            p #{record.winningPercent}
+  br
+  h3 Division B Standings
+  hr
+  table(border=0, width="100%")
+    tr
+      th(class="standingsHeader") Team
+      th(class="standingsHeader") Division
+      th(class="standingsHeader") Games
+      th(class="standingsHeader") Wins
+      th(class="standingsHeader") Losses
+      th(class="standingsHeader") Ties
+      th(class="standingsHeader") Winning%
+      each record in standingsB
+        tr
+          td
+            p #{record.name}
+          td
+            p #{record.division}
+          td
+            p #{record.games}
+          td
+            p #{record.wins}
+          td
+            p #{record.ties}
+          td
+            p #{record.losses}
+          td
+            p #{record.winningPercent}
+  br
+  h3 Division C Standings
+  hr
+  table(border=0, width="100%")
+    tr
+      th(class="standingsHeader") Team
+      th(class="standingsHeader") Division
+      th(class="standingsHeader") Games
+      th(class="standingsHeader") Wins
+      th(class="standingsHeader") Losses
+      th(class="standingsHeader") Ties
+      th(class="standingsHeader") Winning%
+      each record in standingsC
+        tr
+          td
+            p #{record.name}
+          td
+            p #{record.division}
+          td
+            p #{record.games}
+          td
+            p #{record.wins}
+          td
+            p #{record.ties}
+          td
+            p #{record.losses}
+          td
+            p #{record.winningPercent}

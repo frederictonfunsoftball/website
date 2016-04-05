@@ -1,0 +1,9 @@
+{
+	"user":"<mail server username>",
+	"password":"<mail server password>",
+	"host":"<smpt host server>",
+	"ssl":"<use ssl?>",
+	"login_required": <Boolean-if username and password is required to connect to your smpt server.>,
+	"port":"<port number>",
+	"noreply_from":"from field will be replaced by this whenever the from field is not specified."
+}

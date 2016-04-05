@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  h2 League Teams
+  hr
+  p Teams for the current year:
+  br
+  table(border=0, width="100%")
+    tr
+      th(class="teamsHeader")
+        p Team ID
+      th(class="teamsHeader")
+        p Team Name
+    each team in teams
+      tr
+        td
+          p #{team.displayID}
+        td
+          p #{team.name}

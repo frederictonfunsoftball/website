@@ -1,0 +1,193 @@
+extends layout
+
+block append scripts
+  script(src='/javascripts/pdfmake.min.js')
+  script(src='/javascripts/vfs_fonts.js')
+  script.
+    $( document ).ready(function() {
+      refreshTable();
+    });
+    function scheduleDisplayChange() {
+      if ($("#scheduleDisplay").val() == "All Games") {
+        $("#scheduleOptions").empty();
+        $("#scheduleOptions").append(
+          "<option>Not Applicable</option>"
+        );
+      }
+      else if ($("#scheduleDisplay").val() == "By Month") {
+        $("#scheduleOptions").empty();
+        $("#scheduleOptions").append(
+          "<option>May</option>"
+        );
+        $("#scheduleOptions").append(
+          "<option>June</option>"
+        );
+        $("#scheduleOptions").append(
+          "<option>July</option>"
+        );
+        $("#scheduleOptions").append(
+          "<option>August</option>"
+        );
+        $("#scheduleOptions").append(
+          "<option>September</option>"
+        );
+      }
+      else if ($("#scheduleDisplay").val() == "By Team") {
+        $.get("/api/teams/allActive", function(data) {
+          data = JSON.parse(data);
+          $("#scheduleOptions").empty();
+          for (i=0; i < data.length; i++) {
+
+            $("#scheduleOptions").append(
+              "<option value="+data[i].teamID+">"+data[i].displayID+" - "+data[i].name+"</option>"
+            );
+          }
+        });
+      }
+    };
+    function refreshTable() {
+      $("#scheduleTable").empty();
+      switch($("#scheduleDisplay").val()){
+        case "All Games":
+          $.getJSON("/api/schedule/allActive", function(data, status) {
+            data = JSON.parse(data);
+            populateTable(data);
+            $("#currentlyDisplaying").text("Currently Displaying: All Games");
+          });
+          break;
+        case "By Month":
+          $.get("/api/schedule/byMonth/"+$("#scheduleOptions").val(), function(data, status) {
+            data = JSON.parse(data);
+            populateTable(data);
+            $("#currentlyDisplaying").text("Currently Displaying: By Month: " + $("#scheduleOptions").val());
+          });
+          break;
+        case "By Team":
+          $.get("/api/schedule/byTeam/"+$("#scheduleOptions").val(), function(data, status) {
+            data = JSON.parse(data);
+            populateTable(data);
+            $("#currentlyDisplaying").text("Currently Displaying: By Team: " + $("#scheduleOptions").val());
+          });
+          break;
+      }
+    };
+    function populateTable(rows) {
+      $("#scheduleTable").append(
+        "<tr><th class=scheduleHeader>Date and Time</th><th class=scheduleHeader>Away Team</th><th class=scheduleHeader>Home Team</th><th class=scheduleHeader>Field</th><th class=scheduleHeader>Score</th></tr>"
+      );
+      var dataToAppend = "";
+      var currentLine = "";
+      for(i = 0; i < rows.length; i++) {
+        var myDate =  moment(rows[i].dateTime).format("MMM Do ha");
+        currentLine = "<tr><td align='center'>"+myDate+"</td><td align='center'>"+rows[i].awayTeamDisplayID+" - "+rows[i].awayTeamName+"</td>";
+        currentLine += "<td align='center'>"+rows[i].homeTeamDisplayID+" - "+rows[i].homeTeamName+"</td><td align='center'>"+rows[i].fieldName+"</td>";
+        currentLine += "<td align='center'>"+rows[i].status+"</td></tr>";
+        dataToAppend += currentLine;
+      }
+
+      $("#scheduleTable").append(dataToAppend);
+    };
+    function exportToPDF() {
+      switch($("#scheduleDisplay").val()){
+        case "All Games":
+          $.getJSON("/api/schedule/allActive", function(data, status) {
+            data = JSON.parse(data);
+            generatePDF(data);
+          });
+          break;
+        case "By Month":
+          $.get("/api/schedule/byMonth/"+$("#scheduleOptions").val(), function(data, status) {
+            data = JSON.parse(data);
+            generatePDF(data);
+          });
+          break;
+        case "By Team":
+          $.get("/api/schedule/byTeam/"+$("#scheduleOptions").val(), function(data, status) {
+            data = JSON.parse(data);
+            generatePDF(data);
+          });
+          break;
+      }
+
+    };
+    function generatePDF(rows) {
+      return;
+      var dt = new moment().format("MMMM Do YYYY");
+
+
+      var docDefinition = {
+        content: [
+          { text: 'Generated: ' + dt, style: 'date' },
+          { text: 'Fredericton Fun Softball League', style: 'header' },
+          { text: '2016 Schedule', style: 'year' },
+          {
+            style: 'table',
+            table: {
+              headerRows: 1,
+              body: [
+                [{text: 'Date', style: 'tableHeader'}, {text: 'Away Team', style: 'tableHeader'}, {text: 'Home Team', style: 'tableHeader'}, {text: 'Fields', style: 'tableHeader'}],
+                ['One value goes here', 'Another one here', 'OK?', 'test']
+                ]
+              }
+            }
+        ],
+        styles: {
+          header: {
+            fontSize: 18,
+            fontColor: 'black',
+            bold: true,
+            margin: [0, -20, 0, 10]
+          },
+            year: {
+            fontSize: 18,
+            bold: true,
+            margin: [0, -10, 0, 0]
+          },
+          date: {
+            fontSize: 15,
+            bold: true,
+            fontCOlor: 'black',
+            margin: [0, 0, 0, 0],
+            alignment: 'right'
+          },
+          subheader: {
+            fontSize: 16,
+            bold: true,
+            margin: [0, 10, 0, 5]
+          },
+          table: {
+            margin: [0, 5, 0, 15]
+          },
+          tableHeader: {
+            bold: true,
+            fontSize: 13,
+            color: 'black'
+          }
+        },
+        defaultStyle: {
+          // alignment: 'justify'
+        }
+      };
+
+      //var docDefinition = { content: 'This is an sample PDF printed with pdfMake' };
+      pdfMake.createPdf(docDefinition).open();
+
+    };
+
+block content
+  h2 Schedule
+  hr
+  p Display:
+    select(id="scheduleDisplay", onChange="scheduleDisplayChange();", style="width: 100px")
+      option(type=-1) All Games
+      option By Month
+      option By Team
+    select(id="scheduleOptions")
+      option(type=-1) Not Applicable
+    input(type="button" value="Refresh" onClick="refreshTable();")
+  p Export current schedule as PDF:
+    input(type="button" value="Export" onClick="exportToPDF();")
+  br
+  p#currentlyDisplaying
+  hr
+  table(border=0, id="scheduleTable", width="100%")

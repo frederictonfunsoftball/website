@@ -1,0 +1,38 @@
+extends layout
+    
+block content
+  h1 Submit a score
+  h2 Select a game
+  p Select a date:
+    input(type="dropdown")
+  p Select a game:
+    input(type="dropdown")
+  p input(type="button" text="Submit")
+  table
+    tr
+      th
+        p id
+      th
+        p date
+      th
+        p AwayTeamID
+      th
+        p HomeTeamID
+      th
+        p status
+      th
+        p result
+    each row in pendingGames
+      tr
+        td
+          p #{row.gameID}
+        td
+          p #{row.dateTime}
+        td
+          p #{row.awayTeamID}
+        td
+          p #{row.homeTeamID}
+        td
+          p #{row.status}
+        td
+          p #{row.result}

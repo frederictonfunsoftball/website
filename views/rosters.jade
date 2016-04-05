@@ -1,0 +1,18 @@
+extends layout
+
+block append scripts
+
+block content
+  h1 Welcome to the rosters page
+  p As a requirement by the city of Fredericton to be able to participate in a league on city fields a roster for each team must be submitted. The purpose of this page is to streamline the process of collecting this information.
+  form
+    select
+      item team1
+      item team2
+    input Name
+    input Address
+    input City
+    input Postal Code
+    input Phone Number
+    button Submit
+  h1 include recaptcha

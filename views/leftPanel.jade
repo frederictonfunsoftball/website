@@ -1,0 +1,32 @@
+h2 Navigation
+hr
+
+ul
+  li
+    a(class='navLink', href='/index') Home
+  li
+    a(class='navLink', href='/standings') Standings
+  li
+    a(class='navLink', href='/schedule') Schedule
+  li
+    a(class='navLink', href='/leagueRules') League Rules
+  li
+    a(class='navLink', href='/teams') Teams
+  li
+    a(class='navLink', href='/fields') Fields
+  li
+    a(class='navLink', href='/contact') Contact
+if user == "admin"
+  div
+    br
+    p Admin Links
+    hr
+    ul
+      li
+        a(class='navLink', href='/manage/teams') Teams
+      li
+        a(class='navLink', href='/manage/fields') Fields
+      li
+        a(class='navLink', href='/manage/schedule') Schedule
+      li
+        a(class='navLink', href='/manage/seasons') Seasons

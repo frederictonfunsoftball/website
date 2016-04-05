@@ -1,0 +1,32 @@
+extends ./../layout.jade
+
+block append scripts
+  script
+    $(document).ready(function(){
+      //get TeamID
+      db.getActiveScheduleById(teamID, function(){
+        each record
+          $("table").append("
+            tr
+              td record.game
+              td 
+                input Away
+              td 
+                input Home
+              td 
+                button Submit
+          ");  
+      });
+    });
+
+block content
+  h1 Submit Results
+  table(border=1)
+	tr
+      th Game
+      th 
+        input Away        
+      th
+        input Home
+      th
+        button Submit

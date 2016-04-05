@@ -1,0 +1,42 @@
+extends ./../layout.jade
+
+block append scripts
+  script.
+    $(function() {
+        $( '#startDate' ).datepicker();
+        $( '#endDate' ).datepicker();
+        });
+
+
+block content
+  h1 Seasons
+  table(border=1)
+    tr
+      th
+        p Year
+      th
+        p Start Date
+      th
+        p End Date
+      th
+        p Active
+    each row in rows
+      tr
+        td
+          p #{row.year}
+        td
+          p #{row.startDate}
+          input(
+            type='text',
+            value=row.startDate,
+            id='startDate'
+          )
+        td
+          p #{row.endDate}
+          input(
+            type='text',
+            value=row.endDate,
+            id='endDate'
+          )
+        td
+          p #{row.active}

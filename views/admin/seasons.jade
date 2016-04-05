@@ -1,0 +1,31 @@
+extends ./../layout.jade
+
+block append scripts
+  script
+    $(document).ready(function(){
+      db.getAllSeasons(function(){
+        each record
+          $("table").append("
+            tr
+              td record.year
+              td record.startDate
+              td record.endDate
+              td record.status
+              td 
+                button(button) Save Changes
+          ");  
+      });
+    });
+        
+block content
+  p This page is used to Add/Manage Seasons
+  p a Create New Season
+  p List of Seasons
+  table(border=1)
+    tr
+      th Year
+      th Start Date (Drop down calendar)
+      th End Date (Drop down calendar)
+      th Status (dropdown)
+      th Save Changes (button)
+        

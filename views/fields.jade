@@ -1,0 +1,30 @@
+extends layout
+
+block content
+  h2 League Fields
+  hr
+  p This page lists the fields that are used in the league for the current year.
+  br
+  each field in fields
+    div#fields
+      table(border=0)
+        tr
+          td
+            p #{field.name}
+          td
+          //  p
+          //    | TO HIDE:
+          //    | fieldID: #{field.fieldID}
+          //    | active: #{field.active}
+          td
+            p(align="right")
+              //| Lat/Long: #{field.lat}, #{field.long}
+              a(href="http://maps.google.com/?q=#{field.lat},#{field.long}", target="_NEW") View Map
+        //tr
+        //  td(colspan=3)
+        //    p
+        //      | #{field.description}
+        tr
+          td(colspan=3, width=550)
+            p
+              | Location: #{field.directions}
