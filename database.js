@@ -30,7 +30,7 @@ else if (env == "openShiftDev")
 }
 else if (env == "openShiftProd")
 {
-  pool = msyql.createPool({
+  pool = mysql.createPool({
     connectionLimit: 100,
     host: process.env.OPENSHIFT_MYSQL_DB_HOST,
     user: process.env.OPENSHIFT_MYSQL_DB_PORT,
