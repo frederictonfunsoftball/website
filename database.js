@@ -34,8 +34,9 @@ else if (env == "openShiftProd")
     connectionLimit: 100,
     host: process.env.OPENSHIFT_MYSQL_DB_HOST,
     user: process.env.OPENSHIFT_MYSQL_DB_PORT,
-    password: 'adminTCgcYCU',
-    database: 'kA3l6IVkQLdH',
+    user: 'adminTCgcYCU',
+    password: 'kA3l6IVkQLdH',
+    database: 'website'
     debug: false
   });
 }
