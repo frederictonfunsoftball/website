@@ -13,7 +13,7 @@ if(env == "local")
     user: 'softball',
     password: 'Ilike2playsoftball',
     database: 'softball',
-    debug: false
+    debug: true
   });
 }
 else if (env == "openShiftDev")
@@ -25,7 +25,7 @@ else if (env == "openShiftDev")
     user: 'adminRP7uRiv',
     password: 'P53nEKwRX_tE',
     database: 'softballdev',
-    debug: false
+    debug: true
   });
 }
 else if (env == "openShiftProd")
@@ -36,7 +36,7 @@ else if (env == "openShiftProd")
     user: process.env.OPENSHIFT_MYSQL_DB_PORT,
     user: 'adminTCgcYCU',
     password: 'kA3l6IVkQLdH',
-    database: 'website'
+    database: 'website',
     debug: false
   });
 }
