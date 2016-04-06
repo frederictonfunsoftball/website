@@ -36,7 +36,7 @@ else if (env == "openShiftProd")
     user: process.env.OPENSHIFT_MYSQL_DB_PORT,
     user: 'adminTCgcYCU',
     password: 'kA3l6IVkQLdH',
-    database: 'website',
+    database: 'softball',
     debug: false
   });
 }
