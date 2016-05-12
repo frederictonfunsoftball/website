@@ -197,7 +197,7 @@ exports.getTeamsAll = function(callback) {
 };
 // Get active teams
 exports.getTeamsActive = function(callback) {
-  var sql = "select t.teamID as teamID, t.name as name, t.active as active, t.displayID as displayID, d.name as division from teams t, seasons s, inDivision inD, divisions d where t.active = true and t.teamID = inD.teamID and s.year = inD.year and inD.division = d.divisionID";
+  var sql = "select t.teamID as teamID, t.name as name, t.active as active, t.displayID as displayID, d.name as division from teams t, seasons s, inDivision inD, divisions d where t.active = true and t.teamID = inD.teamID and s.year = inD.year and inD.division = d.divisionID and s.active = 1 order by displayID";
   pool.getConnection(function(err, connection) {
     if(err) {
       console.log(err);
@@ -242,7 +242,7 @@ exports.getTeamByID = function(teamID, callback) {
 //
 // Get full Schedule
 exports.getScheduleActive = function(callback) {
-  var sql = "select g.gameID as gameID, s.year as year, awayT.teamID as awayTeamID, awayT.DisplayID as awayTeamDisplayID, awayT.name as awayTeamName, homeT.teamID as homeTeamID, homeT.displayID as homeTeamDisplayID, homeT.name as homeTeamName, f.fieldID as fieldID, f.name as fieldName, g.dateTime as 'dateTime', g.status as status, g.type as type from games g, seasons s, teams awayT, teams homeT, fields f where g.year = s.year and g.awayTeamID = awayT.teamID and g.homeTeamID = homeT.teamID and g.fieldID = f.fieldID and s.active = true ";
+  var sql = "select g.gameID as gameID, s.year as year, awayT.teamID as awayTeamID, awayT.DisplayID as awayTeamDisplayID, awayT.name as awayTeamName, homeT.teamID as homeTeamID, homeT.displayID as homeTeamDisplayID, homeT.name as homeTeamName, f.fieldID as fieldID, f.name as fieldName, g.dateTime as 'dateTime', g.status as status, g.type as type from games g, seasons s, teams awayT, teams homeT, fields f where g.year = s.year and g.awayTeamID = awayT.teamID and g.homeTeamID = homeT.teamID and g.fieldID = f.fieldID and s.active = true order by g.dateTime";
 pool.getConnection(function(err, connection) {
     if(err) {
       console.log(err);
@@ -264,7 +264,7 @@ pool.getConnection(function(err, connection) {
 // Get Schedule by TeamID
 exports.getScheduleByTeamId = function(teamID, callback) {
   console.log("TeamID: " + teamID);
-  var sql = "select g.gameID as gameID, s.year as year, awayT.teamID as awayTeamID, awayT.displayID as awayTeamDisplayID, awayT.name as awayTeamName, homeT.teamID as homeTeamID, homeT.displayID as homeTeamDisplayID, homeT.name as homeTeamName, f.fieldID as fieldID, f.name as fieldName, g.dateTime as 'dateTime', g.status as status, g.type as type from games g, seasons s, teams awayT, teams homeT, fields f where g.year = s.year and g.awayTeamID = awayT.teamID and g.homeTeamID = homeT.teamID and g.fieldID = f.fieldID and s.active = true and (g.awayTeamID = "+teamID+" or g.homeTeamID = "+teamID+");";
+  var sql = "select g.gameID as gameID, s.year as year, awayT.teamID as awayTeamID, awayT.displayID as awayTeamDisplayID, awayT.name as awayTeamName, homeT.teamID as homeTeamID, homeT.displayID as homeTeamDisplayID, homeT.name as homeTeamName, f.fieldID as fieldID, f.name as fieldName, g.dateTime as 'dateTime', g.status as status, g.type as type from games g, seasons s, teams awayT, teams homeT, fields f where g.year = s.year and g.awayTeamID = awayT.teamID and g.homeTeamID = homeT.teamID and g.fieldID = f.fieldID and s.active = true and (g.awayTeamID = "+teamID+" or g.homeTeamID = "+teamID+") order by g.dateTime;";
   pool.getConnection(function(err, connection) {
     if(err) {
       console.log(err);
@@ -362,7 +362,7 @@ exports.getScheduleByMonth = function(month, callback) {
       monthInt = 9;
       break;
   }
-  var sql = "select g.gameID as gameID, s.year as year, awayT.teamID as awayTeamID, awayT.displayID as awayTeamDisplayID, awayT.name as awayTeamName, homeT.teamID as homeTeamID, homeT.displayID as homeTeamDisplayID, homeT.name as homeTeamName, f.fieldID as fieldID, f.name as fieldName, g.dateTime as 'dateTime', g.status as status, g.type as type from games g, seasons s, teams awayT, teams homeT, fields f where g.year = s.year and g.awayTeamID = awayT.teamID and g.homeTeamID = homeT.teamID and g.fieldID = f.fieldID and s.active = true and month(g.dateTime) = " + monthInt;
+  var sql = "select g.gameID as gameID, s.year as year, awayT.teamID as awayTeamID, awayT.displayID as awayTeamDisplayID, awayT.name as awayTeamName, homeT.teamID as homeTeamID, homeT.displayID as homeTeamDisplayID, homeT.name as homeTeamName, f.fieldID as fieldID, f.name as fieldName, g.dateTime as 'dateTime', g.status as status, g.type as type from games g, seasons s, teams awayT, teams homeT, fields f where g.year = s.year and g.awayTeamID = awayT.teamID and g.homeTeamID = homeT.teamID and g.fieldID = f.fieldID and s.active = true and month(g.dateTime) = " + monthInt + " order by g.dateTime;";
   pool.getConnection(function(err, connection) {
     if(err) {
       console.log(err);

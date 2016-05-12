@@ -78,8 +78,9 @@ block append scripts
       var dataToAppend = "";
       var currentLine = "";
       for(i = 0; i < rows.length; i++) {
-        var myDate =  moment(rows[i].dateTime).format("MMM Do ha");
-        currentLine = "<tr><td align='center'>"+myDate+"</td><td align='center'>"+rows[i].awayTeamDisplayID+" - "+rows[i].awayTeamName+"</td>";
+        var myDate = moment(rows[i].dateTime).format("MMM Do");
+        var myTime = moment(rows[i].dateTime).format("h:mm a");
+        currentLine = "<tr><td align='center'>"+myDate+"<br/>"+myTime+"</td><td align='center'>"+rows[i].awayTeamDisplayID+" - "+rows[i].awayTeamName+"</td>";
         currentLine += "<td align='center'>"+rows[i].homeTeamDisplayID+" - "+rows[i].homeTeamName+"</td><td align='center'>"+rows[i].fieldName+"</td>";
         currentLine += "<td align='center'>"+rows[i].status+"</td></tr>";
         dataToAppend += currentLine;

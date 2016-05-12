@@ -8,7 +8,7 @@ block content
   table(border=0, width="100%")
     tr
       th(class="standingsHeader") Team
-      th(class="standingsHeader") Division
+      //th(class="standingsHeader") Division
       th(class="standingsHeader") Games
       th(class="standingsHeader") Wins
       th(class="standingsHeader") Losses
@@ -18,8 +18,8 @@ block content
         tr
           td
             p #{record.name}
-          td
-            p #{record.division}
+          //td
+          //  p #{record.division}
           td
             p #{record.games}
           td
@@ -29,14 +29,15 @@ block content
           td
             p #{record.losses}
           td
-            p #{record.winningPercent}
+            p #{(record.games ? record.winningPercent : 0)}
+
   br
   h3 Division B Standings
   hr
   table(border=0, width="100%")
     tr
       th(class="standingsHeader") Team
-      th(class="standingsHeader") Division
+      //th(class="standingsHeader") Division
       th(class="standingsHeader") Games
       th(class="standingsHeader") Wins
       th(class="standingsHeader") Losses
@@ -46,8 +47,8 @@ block content
         tr
           td
             p #{record.name}
-          td
-            p #{record.division}
+          //td
+          //  p #{record.division}
           td
             p #{record.games}
           td
@@ -57,14 +58,14 @@ block content
           td
             p #{record.losses}
           td
-            p #{record.winningPercent}
+            p #{(record.games ? record.winningPercent: 0)}
   br
   h3 Division C Standings
   hr
   table(border=0, width="100%")
     tr
       th(class="standingsHeader") Team
-      th(class="standingsHeader") Division
+      //th(class="standingsHeader") Division
       th(class="standingsHeader") Games
       th(class="standingsHeader") Wins
       th(class="standingsHeader") Losses
@@ -74,8 +75,8 @@ block content
         tr
           td
             p #{record.name}
-          td
-            p #{record.division}
+          //td
+          //  p #{record.division}
           td
             p #{record.games}
           td
@@ -85,4 +86,4 @@ block content
           td
             p #{record.losses}
           td
-            p #{record.winningPercent}
+            p #{(record.games ? record.winningPercent : 0)}
