@@ -79,7 +79,7 @@ block append scripts
       var currentLine = "";
       for(i = 0; i < rows.length; i++) {
         var myDate = moment(rows[i].dateTime).format("MMM Do");
-        var myTime = moment(rows[i].dateTime).format("h:mm a");
+        var myTime = moment(rows[i].dateTime).format("h:mm a").subtract(1,"h");
         currentLine = "<tr><td align='center'>"+myDate+"<br/>"+myTime+"</td><td align='center'>"+rows[i].awayTeamDisplayID+" - "+rows[i].awayTeamName+"</td>";
         currentLine += "<td align='center'>"+rows[i].homeTeamDisplayID+" - "+rows[i].homeTeamName+"</td><td align='center'>"+rows[i].fieldName+"</td>";
         currentLine += "<td align='center'>"+rows[i].status+"</td></tr>";
