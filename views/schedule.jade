@@ -66,7 +66,10 @@ block append scripts
           $.get("/api/schedule/byTeam/"+$("#scheduleOptions").val(), function(data, status) {
             data = JSON.parse(data);
             populateTable(data);
-            $("#currentlyDisplaying").text("Currently Displaying: By Team: " + $("#scheduleOptions").val());
+            $.get("/api/teams/name/byID/"+$("#scheduleOptions").val(), function(data, status) {
+              data = JSON.parse(data);
+              $("#currentlyDisplaying").text("Currently Displaying: By Team: " + data[0].name);
+            });
           });
           break;
       }
@@ -79,7 +82,7 @@ block append scripts
       var currentLine = "";
       for(i = 0; i < rows.length; i++) {
         var myDate = moment(rows[i].dateTime).format("MMM Do");
-        var myTime = moment(rows[i].dateTime).subtract(1,"hours").format("h:mm a");
+        var myTime = moment(rows[i].dateTime).format("h:mm a");
         currentLine = "<tr><td align='center'>"+myDate+"<br/>"+myTime+"</td><td align='center'>"+rows[i].awayTeamDisplayID+" - "+rows[i].awayTeamName+"</td>";
         currentLine += "<td align='center'>"+rows[i].homeTeamDisplayID+" - "+rows[i].homeTeamName+"</td><td align='center'>"+rows[i].fieldName+"</td>";
         currentLine += "<td align='center'>"+rows[i].status+"</td></tr>";

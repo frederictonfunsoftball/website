@@ -54,9 +54,21 @@ router.get('/teams/allActive', function(req, res) {
     res.json(json);
   });
 });
-//router.get('/teams/byID', teamID, function(req, res, next) {
-//  res.send('team: ' + teamID);
-//});
+router.get('/teams/name/byID/:teamID', function(req, res, next) {
+  console.log("Fetching team name for ");
+  var teamID = req.params.teamID;
+  console.log(teamID);
+
+  db.getTeamNameByID(teamID, function(state, rows) {
+    console.log("State: " + state);
+    console.log("rows: " + rows);
+
+    var json = JSON.stringify(rows);
+
+    console.log("Returning from: /teams/byID")
+    res.json(json);
+  });
+});
 
 //
 // Games
@@ -84,7 +96,8 @@ router.get('/schedule/byMonth/:month', function(req, res) {
 
     console.log("Returning from: /schedule/byMonth");
     res.json(json);
-  });});
+  });
+});
 router.get('/schedule/byTeam/:teamID', function(req, res) {
   console.log("Working in: /schedule/byTeam");
   var team = req.params.teamID;

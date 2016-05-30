@@ -236,6 +236,28 @@ exports.getTeamByID = function(teamID, callback) {
     });
   });
 };
+
+// Get Team Name By teamID
+exports.getTeamNameByID = function(teamID, callback) {
+  var sql = "select name from teams where teamID = " + teamID;
+  pool.getConnection(function(err, connection) {
+    if(err) {
+      console.log(err);
+      callback(false);
+      return;
+    }
+    connection.query(sql, function(err, rows) {
+      connection.release();
+      if(err) {
+        console.log(err);
+        callback(false);
+        return;
+      }
+      callback(true, rows);
+    });
+  });
+};
+
 //
 //
 // Schedule Queries
