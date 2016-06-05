@@ -16,7 +16,7 @@ router.get('/', function(req, res, next) {
   //});
 
   var request = require('request');
-  request('http://www.frederictonfunsoftball.com/api/standings', function (error, response, body) {
+  request('http://127.0.0.1:9090/api/standings', function (error, response, body) {
     if (!error && response.statusCode == 200) {
       console.log(1);
       console.log(body);
@@ -24,7 +24,7 @@ router.get('/', function(req, res, next) {
       body = JSON.parse(body);
       res.locals.standingsScores = body;
 
-      request('http://www.frederictonfunsoftball.com/api/teams/allActive', function (error, response, body) {
+      request('http://127.0.0.1:9090/api/teams/allActive', function (error, response, body) {
         if (!error && response.statusCode == 200) {
           console.log("test2");
           console.log(body);
@@ -99,7 +99,7 @@ router.get('/', function(req, res, next) {
             }
           }
 
-          var divisionA = []
+          var divisionA = [];
           var divisionB = [];
           var divisionC = [];
 
@@ -109,7 +109,10 @@ router.get('/', function(req, res, next) {
             console.log(teams[i].name + " ties: " + teams[i].ties);
 
             teams[i].games = teams[i].wins + teams[i].losses + teams[i].ties;
-            teams[i].winningPercent = teams[i].wins / teams[i].games * 100;
+            teams[i].winningPercent = Math.round(teams[i].wins / teams[i].games * 100);
+            if (isNaN(teams[i].winningPercent))
+              teams[i].winningPercent = 0;
+
 
             if(teams[i].division == "Division A") {
               divisionA[divisionA.length] = teams[i];
@@ -121,6 +124,29 @@ router.get('/', function(req, res, next) {
               divisionC[divisionC.length] = teams[i];
             }
           }
+
+          // Sort Divisions by winningPercent
+          // Division A
+          divisionA.sort(function(a, b){
+            //console.log("\n\nTesting: " + a.winningPercent + "\n\n");
+            //console.log("\n\nTesting: " + b.winningPercent + "\n\n");
+            return b.winningPercent - a.winningPercent;
+          });
+
+          // Division B
+          divisionB.sort(function(a, b){
+            console.log("\n\nTesting: " + a.winningPercent + "\n\n");
+            console.log("\n\nTesting: " + b.winningPercent + "\n\n");
+            return b.winningPercent - a.winningPercent;
+          });
+
+          // Division C
+          divisionC.sort(function(a, b){
+            //console.log("\n\nTesting: " + a.winningPercent + "\n\n");
+            //console.log("\n\nTesting: " + b.winningPercent + "\n\n");
+            return b.winningPercent - a.winningPercent;
+          });
+
 
           console.log("Division A: " + divisionA.length);
           console.log("Division B: " + divisionB.length);
