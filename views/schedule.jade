@@ -83,9 +83,20 @@ block append scripts
       for(i = 0; i < rows.length; i++) {
         var myDate = moment(rows[i].dateTime).format("MMM Do");
         var myTime = moment(rows[i].dateTime).subtract(1, "hours").format("h:mm a");
-        currentLine = "<tr><td align='center'>"+myDate+"<br/>"+myTime+"</td><td align='center'>"+rows[i].awayTeamDisplayID+" - "+rows[i].awayTeamName+"</td>";
-        currentLine += "<td align='center'>"+rows[i].homeTeamDisplayID+" - "+rows[i].homeTeamName+"</td><td align='center'>"+rows[i].fieldName+"</td>";
-        currentLine += "<td align='center'>"+rows[i].status+"</td></tr>";
+        currentLine = "<tr><td align='center'>"+myDate+"<br/>"+myTime+"</td>";
+        if(rows[i].awayScore > rows[i].homeScore)
+          currentLine += "<td align='center' bgcolor='lightgrey'>"+rows[i].awayTeamDisplayID+" - "+rows[i].awayTeamName+"</td>";
+        else
+          currentLine += "<td align='center'>"+rows[i].awayTeamDisplayID+" - "+rows[i].awayTeamName+"</td>";
+        if(rows[i].awayScore < rows[i].homeScore)
+          currentLine += "<td align='center' bgcolor='lightgrey'>"+rows[i].homeTeamDisplayID+" - "+rows[i].homeTeamName+"</td>";
+        else
+          currentLine += "<td align='center'>"+rows[i].homeTeamDisplayID+" - "+rows[i].homeTeamName+"</td>";
+        currentLine += "<td align='center'>"+rows[i].fieldName+"</td>";
+        if(rows[i].status == "played" && rows[i].awayScore != null)
+          currentLine += "<td align='center'>"+rows[i].awayScore+" - "+rows[i].homeScore+"</td></tr>";
+        else
+          currentLine += "<td align='center'>"+rows[i].status+"</td></tr>";
         dataToAppend += currentLine;
       }
 

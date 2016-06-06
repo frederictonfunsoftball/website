@@ -264,7 +264,7 @@ exports.getTeamNameByID = function(teamID, callback) {
 //
 // Get full Schedule
 exports.getScheduleActive = function(callback) {
-  var sql = "select g.gameID as gameID, s.year as year, awayT.teamID as awayTeamID, awayT.DisplayID as awayTeamDisplayID, awayT.name as awayTeamName, homeT.teamID as homeTeamID, homeT.displayID as homeTeamDisplayID, homeT.name as homeTeamName, f.fieldID as fieldID, f.name as fieldName, g.dateTime as 'dateTime', g.status as status, g.type as type from games g, seasons s, teams awayT, teams homeT, fields f where g.year = s.year and g.awayTeamID = awayT.teamID and g.homeTeamID = homeT.teamID and g.fieldID = f.fieldID and s.active = true order by g.dateTime";
+  var sql = "select g.gameID as gameID, s.year as year, awayT.teamID as awayTeamID, awayT.DisplayID as awayTeamDisplayID, awayT.name as awayTeamName, homeT.teamID as homeTeamID, homeT.displayID as homeTeamDisplayID, homeT.name as homeTeamName, f.fieldID as fieldID, f.name as fieldName, g.dateTime as 'dateTime', g.status as status, g.type as type, sc.awayScore, sc.homeScore from games g left outer join scores sc on g.gameID = sc.gameID, seasons s, teams awayT, teams homeT, fields f where g.year = s.year and g.awayTeamID = awayT.teamID and g.homeTeamID = homeT.teamID and g.fieldID = f.fieldID and s.active = true order by g.dateTime";
 pool.getConnection(function(err, connection) {
     if(err) {
       console.log(err);
@@ -286,7 +286,7 @@ pool.getConnection(function(err, connection) {
 // Get Schedule by TeamID
 exports.getScheduleByTeamId = function(teamID, callback) {
   console.log("TeamID: " + teamID);
-  var sql = "select g.gameID as gameID, s.year as year, awayT.teamID as awayTeamID, awayT.displayID as awayTeamDisplayID, awayT.name as awayTeamName, homeT.teamID as homeTeamID, homeT.displayID as homeTeamDisplayID, homeT.name as homeTeamName, f.fieldID as fieldID, f.name as fieldName, g.dateTime as 'dateTime', g.status as status, g.type as type from games g, seasons s, teams awayT, teams homeT, fields f where g.year = s.year and g.awayTeamID = awayT.teamID and g.homeTeamID = homeT.teamID and g.fieldID = f.fieldID and s.active = true and (g.awayTeamID = "+teamID+" or g.homeTeamID = "+teamID+") order by g.dateTime;";
+  var sql = "select g.gameID as gameID, s.year as year, awayT.teamID as awayTeamID, awayT.displayID as awayTeamDisplayID, awayT.name as awayTeamName, homeT.teamID as homeTeamID, homeT.displayID as homeTeamDisplayID, homeT.name as homeTeamName, f.fieldID as fieldID, f.name as fieldName, g.dateTime as 'dateTime', g.status as status, g.type as type, sc.awayScore, sc.homeScore from games g left outer join scores sc on g.gameID = sc.gameID, seasons s, teams awayT, teams homeT, fields f where g.year = s.year and g.awayTeamID = awayT.teamID and g.homeTeamID = homeT.teamID and g.fieldID = f.fieldID and s.active = true and (g.awayTeamID = "+teamID+" or g.homeTeamID = "+teamID+") order by g.dateTime;";
   pool.getConnection(function(err, connection) {
     if(err) {
       console.log(err);
@@ -384,7 +384,7 @@ exports.getScheduleByMonth = function(month, callback) {
       monthInt = 9;
       break;
   }
-  var sql = "select g.gameID as gameID, s.year as year, awayT.teamID as awayTeamID, awayT.displayID as awayTeamDisplayID, awayT.name as awayTeamName, homeT.teamID as homeTeamID, homeT.displayID as homeTeamDisplayID, homeT.name as homeTeamName, f.fieldID as fieldID, f.name as fieldName, g.dateTime as 'dateTime', g.status as status, g.type as type from games g, seasons s, teams awayT, teams homeT, fields f where g.year = s.year and g.awayTeamID = awayT.teamID and g.homeTeamID = homeT.teamID and g.fieldID = f.fieldID and s.active = true and month(g.dateTime) = " + monthInt + " order by g.dateTime;";
+  var sql = "select g.gameID as gameID, s.year as year, awayT.teamID as awayTeamID, awayT.displayID as awayTeamDisplayID, awayT.name as awayTeamName, homeT.teamID as homeTeamID, homeT.displayID as homeTeamDisplayID, homeT.name as homeTeamName, f.fieldID as fieldID, f.name as fieldName, g.dateTime as 'dateTime', g.status as status, g.type as type, sc.awayScore as awayScore, sc.homeScore as homeScore from games g left outer join scores sc on g.gameID = sc.gameID, seasons s, teams awayT, teams homeT, fields f where g.year = s.year and g.awayTeamID = awayT.teamID and g.homeTeamID = homeT.teamID and g.fieldID = f.fieldID and s.active = true and month(g.dateTime) = "+monthInt+" order by g.dateTime;";
   pool.getConnection(function(err, connection) {
     if(err) {
       console.log(err);
