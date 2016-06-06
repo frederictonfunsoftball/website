@@ -16,7 +16,7 @@ router.get('/', function(req, res, next) {
   //});
 
   var request = require('request');
-  request('http://127.0.0.1:9090/api/standings', function (error, response, body) {
+  request('http://www.frederictonfunsoftball.com/api/standings', function (error, response, body) {
     if (!error && response.statusCode == 200) {
       console.log(1);
       console.log(body);
@@ -24,7 +24,7 @@ router.get('/', function(req, res, next) {
       body = JSON.parse(body);
       res.locals.standingsScores = body;
 
-      request('http://127.0.0.1:9090/api/teams/allActive', function (error, response, body) {
+      request('http://www.frederictonfunsoftball.com/api/teams/allActive', function (error, response, body) {
         if (!error && response.statusCode == 200) {
           console.log("test2");
           console.log(body);
