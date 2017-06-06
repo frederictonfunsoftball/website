@@ -158,6 +158,6 @@ require('http').createServer(lex.middleware(require('redirect-https')())).listen
 });
 
 // handles your app
-require('https').createServer(lex.httpsOptions, lex.middleware(app)).listen(443, function () {
+require('https').createServer(lex.httpsOptions, lex.middleware(app)).listen(port, function () {
   console.log("Listening for ACME tls-sni-01 challenges and serve app on", this.address());
 });
