@@ -1,16 +1,39 @@
 extends layout
 
 block append scripts
+  script.
+    function validate() {
+      var email = document.forms["login"]["email"].value;
+      var password = document.forms["login"]["password"].value;
 
+      if (email == "") {
+        alert("Email is required");
+        return false;
+      }
+      if (password == "") {
+        alert("Password is required");
+        return false;
+      }
+    };
 block content
-  form
-    p Username: 
-      input(type="text")
-    p Password:
-      input(type="password")
-    p Remember me:
-      input(type="checkbox")
-    p Login
-      input(type="button" text="Login")
-    
-    
+  if(typeof error != 'undefined')
+    p #{error.message}
+  form(name="login", action="login", method="post", onsubmit="return validate()")
+    table
+      tr
+        td
+          p Email:
+        td
+          input(name="email", type="text", required, style("width: 300px"))
+      tr
+        td
+          p Password:
+        td
+          input(name="password", type="password", required, style("width: 300px"))
+      tr
+        td
+          p
+            input(type="submit", text="Login", value="Login")
+        td
+          p
+            a(class='navLink', href='/login/register') Register

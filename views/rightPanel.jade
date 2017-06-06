@@ -18,7 +18,15 @@ br
 p
   | Upcoming Games:
   hr
-  //each nextGame in nextGames
-  //  div#recentGames
-  //    p #{nextGame.fieldName} - #{nextGame.dateTime}
-  //    p #{nextGame.awayName} vs. p #{nextGame.homeName}
+  each nextGame in nextGames
+    div#recentGames
+      p #{nextGame.fieldName} - #{nextGame.dateTime}
+      p #{nextGame.awayName} vs. p #{nextGame.homeName}
+p
+  hr
+  if(typeof user == 'undefined')
+    a(href="/login") Login
+  else
+    p Logged in as: <br> #{user[0].displayName}
+    input(type="hidden" id="user" value="#{user[0].displayName}")
+    a(href="/Logout") Logout

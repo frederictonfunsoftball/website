@@ -56,17 +56,17 @@ block append scripts
           });
           break;
         case "By Month":
-          $.get("/api/schedule/byMonth/"+$("#scheduleOptions").val(), function(data, status) {
+          $.getJSON("/api/schedule/byMonth/"+$("#scheduleOptions").val(), function(data, status) {
             data = JSON.parse(data);
             populateTable(data);
             $("#currentlyDisplaying").text("Currently Displaying: By Month: " + $("#scheduleOptions").val());
           });
           break;
         case "By Team":
-          $.get("/api/schedule/byTeam/"+$("#scheduleOptions").val(), function(data, status) {
+          $.getJSON("/api/schedule/byTeam/"+$("#scheduleOptions").val(), function(data, status) {
             data = JSON.parse(data);
             populateTable(data);
-            $.get("/api/teams/name/byID/"+$("#scheduleOptions").val(), function(data, status) {
+            $.getJSON("/api/teams/name/byID/"+$("#scheduleOptions").val(), function(data, status) {
               data = JSON.parse(data);
               $("#currentlyDisplaying").text("Currently Displaying: By Team: " + data[0].name);
             });
@@ -84,19 +84,29 @@ block append scripts
         var myDate = moment(rows[i].dateTime).format("MMM Do");
         var myTime = moment(rows[i].dateTime).subtract(1, "hours").format("h:mm a");
         currentLine = "<tr><td align='center'>"+myDate+"<br/>"+myTime+"</td>";
+        // Away Team
         if(rows[i].awayScore > rows[i].homeScore)
           currentLine += "<td align='center' bgcolor='lightgrey'>"+rows[i].awayTeamDisplayID+" - "+rows[i].awayTeamName+"</td>";
         else
           currentLine += "<td align='center'>"+rows[i].awayTeamDisplayID+" - "+rows[i].awayTeamName+"</td>";
+        // Home Team
         if(rows[i].awayScore < rows[i].homeScore)
           currentLine += "<td align='center' bgcolor='lightgrey'>"+rows[i].homeTeamDisplayID+" - "+rows[i].homeTeamName+"</td>";
         else
           currentLine += "<td align='center'>"+rows[i].homeTeamDisplayID+" - "+rows[i].homeTeamName+"</td>";
+        // Field Name
         currentLine += "<td align='center'>"+rows[i].fieldName+"</td>";
+        // Status Column
         if(rows[i].status == "played" && rows[i].awayScore != null)
-          currentLine += "<td align='center'>"+rows[i].awayScore+" - "+rows[i].homeScore+"</td></tr>";
+          currentLine += "<td align='center'>"+rows[i].awayScore+" - "+rows[i].homeScore;
         else
-          currentLine += "<td align='center'>"+rows[i].status+"</td></tr>";
+          currentLine += "<td align='center'>"+rows[i].status;
+        if($("#user").val() == 'Brad Bergeron')
+          currentLine += "<br><a href='/manage/games/"+rows[i].gameID+"'>Submit&nbsp;Score</a>";
+        else {
+          //currentLine += "tester";
+        }
+        currentLine += "</td></tr>";
         dataToAppend += currentLine;
       }
 
@@ -188,6 +198,44 @@ block append scripts
       pdfMake.createPdf(docDefinition).open();
 
     };
+    function exportToICal() {
+      switch($("#scheduleDisplay").val()){
+        case "All Games":
+          $.getJSON("/api/schedule/allActive", function(data, status) {
+            exportToICalData({"type": "all"});
+          });
+          break;
+        case "By Month":
+          $.get("/api/schedule/byMonth/"+$("#scheduleOptions").val(), function(data, status) {
+            var json = {};
+            json.type = "byMonth";
+            json.month = $("#scheduleOptions").val();
+            exportToICalData(json);
+            //exportToICalData('{"type": "byMonth", "month": "'+$("#scheduleOptions").val()+'"}');
+          });
+          break;
+        case "By Team":
+          $.get("/api/schedule/byTeam/"+$("#scheduleOptions").val(), function(data, status) {
+            var json = {};
+            json.type = "byTeam";
+            json.teamID = $("#scheduleOptions").val();
+            exportToICalData(json);
+            //exportToICalData('{"type": "byTeam", "teamID": "'+$("#scheduleOptions").val()+'"}');
+          });
+          break;
+      };
+    };
+    function exportToICalData(data) {
+      $.ajax(
+      {
+        type: "POST",
+        url: "/schedule/export/ical",
+        data: data,
+        success: function() {
+          window.open("/schedule/ical/ical.ics");
+        }
+      });
+    };
 
 block content
   h2 Schedule
@@ -200,8 +248,11 @@ block content
     select(id="scheduleOptions")
       option(type=-1) Not Applicable
     input(type="button" value="Refresh" onClick="refreshTable();")
-  p Export current schedule as PDF:
-    input(type="button" value="Export" onClick="exportToPDF();")
+  if(typeof user != 'undefined' && user[0].role == "admin")
+    p Export current schedule as PDF:
+      input(type="button" value="Export" onClick="exportToPDF();")
+    p Export current schedule as iCal:
+      input(type="button" value="Export" onclick="exportToICal();")
   br
   p#currentlyDisplaying
   hr

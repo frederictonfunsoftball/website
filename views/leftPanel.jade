@@ -16,17 +16,26 @@ ul
     a(class='navLink', href='/fields') Fields
   li
     a(class='navLink', href='/contact') Contact
-if user == "admin"
-  div
-    br
-    p Admin Links
-    hr
-    ul
-      li
-        a(class='navLink', href='/manage/teams') Teams
-      li
-        a(class='navLink', href='/manage/fields') Fields
-      li
-        a(class='navLink', href='/manage/schedule') Schedule
-      li
-        a(class='navLink', href='/manage/seasons') Seasons
+if(typeof user != 'undefined')
+  if user[0].role == "admin"
+    div
+      br
+      p Admin Links
+      hr
+      ul
+        li
+          a(class='navLink', href='/manage/teams') Teams
+        li
+          a(class='navLink', href='/manage/fields') Fields
+        li
+          a(class='navLink', href='/manage/schedule') Schedule
+        li
+          a(class='navLink', href='/manage/seasons') Seasons
+  if user[0].role == "admin" || user[0].role == "manager"
+    div
+      br
+      p Manager Links
+      hr
+      ul
+        li
+          //a(class='navLink', href='/') Submit Score

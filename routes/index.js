@@ -93,29 +93,6 @@ router.post('/contact/submit', function(req, res, next) {
   res.render('contact');
 });
 
-router.get('/login', function(req, res, next) {
-  req.session.user="admin";
-  res.redirect('/');
-  //res.render('login');
-});
-router.post('/login', function(req, res, next) {
-  /*db.login(req.body.username, req.body.password, function(err, user) {
-    if (!user) {
-      res.render('login.jade', { error: 'Invalid email or password.' });
-    } else {
-      if (req.body.password === user.password) {
-        // sets a cookie with the user's info
-        req.session.user = user;
-        res.redirect('/');
-      } else {
-        res.render('login.jade', { error: 'Invalid email or password.' });
-      }
-    }
-  });*/
-
-  req.session.user="admin";
-});
-
 router.get('/logout', function(req, res, next) {
   req.session.reset();
   res.redirect('/');

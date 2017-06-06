@@ -1,0 +1,84 @@
+extends layout
+
+block append scripts
+  script.
+    $( document ).ready(function() {
+      $.get("/api/teams/allActive", function(data) {
+        data = JSON.parse(data);
+        $("#teamID").empty();
+        for (i=0; i < data.length; i++) {
+          $("#teamID").append(
+            "<option value="+data[i].teamID+">"+data[i].displayID+" - "+data[i].name+"</option>"
+          );
+        }
+      });
+    });
+    function validate() {
+      var displayName = document.forms["register"]["displayName"].value;
+      var email = document.forms["register"]["email"].value;
+      var teamID = document.forms["register"]["teamID"].value;
+      var password = document.forms["register"]["password"].value;
+      var confirmPassword = document.forms["register"]["confirmPassword"].value;
+
+      if (displayName == "") {
+        alert("Display Name is required");
+        return false;
+      }
+      if (email == "") {
+        alert("Email is required");
+        return false;
+      }
+      if (password == "") {
+        alert("Password is required");
+        return false;
+      }
+      if (confirmPassword == "") {
+        alert("Confirm Password is required");
+        return false;
+      }
+
+      if (password != confirmPassword) {
+        alert("Passwords do not match");
+        return false;
+      }
+
+      return true;
+    };
+block content
+  if(typeof error != 'undefined')
+    p #{error.message}
+  h1 Register
+  p Team Managers can register for an account. Accounts allow the team managers to submit scores for games.
+  p Note: Accounts must be approved by an Admin before they become active.
+  form(name="register", action='register', method='post', onsubmit="return validate()")
+    table
+      tr
+        td
+          p Display Name:
+        td
+          input(name="displayName", type="text", required, style="width: 300px")
+      tr
+        td
+          p Email:
+        td
+          input(name="email", type="text", required, style="width: 300px")
+      tr
+        td
+          p Team:
+        td
+          select(id="teamID", style="width: 300px")
+            option(type=-1) Loading...
+      tr
+        td
+          p Password:
+        td
+          input(name="password", type="password", required, style="width: 300px")
+      tr
+        td
+          p Confirm Password:
+        td
+          input(name="confirmPassword", type="password", required, style="width: 300px")
+      tr
+        td
+          p
+            input(type="submit", text="Submit", value="Submit")

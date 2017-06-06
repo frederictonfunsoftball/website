@@ -1,0 +1,133 @@
+extends ./../layout
+
+block append scripts
+  script.
+    function submitScore() {
+      if ($.isNumeric($("#awayScore").val()) == false) {
+        alert('Please enter a valid away score');
+        return 1;
+      }
+      if ($.isNumeric($("#homeScore").val()) == false) {
+        alert('Please enter a valid home score');
+        return 1;
+      }
+      alert("/api/manage/games/#{games[0].gameID}/"+$("#awayScore").val()+"/"+$("#homeScore").val()+"/#{user[0].userID}");
+      //$.put("/api/manage/games/#{games[0].gameID}/"+$("#awayScore").val()+"/"+$("#homeScore").val());
+    };
+
+block content
+  h2 Manage Scores
+  hr
+  table
+    if user[0].role == "admin"
+      tr
+        td
+          p gameID:
+        td
+          p #{games[0].gameID}
+    tr
+      td
+        p Date/Time:
+      td
+        p #{games[0].dateTime}
+    if user[0].role == "admin"
+      tr
+        td
+          p awayTeamID:
+        td
+          p #{games[0].awayTeamID}
+    tr
+      td
+        p Away Team:
+      td
+        p #{games[0].awayName}
+    tr
+      td
+        p Away Team ID:
+      td
+        p #{games[0].awayDisplayID}
+    if user[0].role == "admin"
+      tr
+        td
+          p homeTeamID:
+        td
+          p #{games[0].homeTeamID}
+    tr
+      td
+        p Home Team:
+      td
+        p #{games[0].homeName}
+    tr
+      td
+        p Home Team ID:
+      td
+        p #{games[0].homeDisplayID}
+    if user[0].role == "admin"
+      tr
+        td
+          p fieldID:
+        td
+          p #{games[0].fieldID}
+    tr
+      td
+        p Field:
+      td
+        p #{games[0].name}
+  hr
+  h2 Submit Score
+  hr
+  table(border=0)
+    tr
+      td
+        p Away Score:
+      td
+        input(type="text" value="" id="awayScore")
+    tr
+      td
+        p Home Score:
+      td
+        input(type="text" value="" id="homeScore")
+    tr
+      td(colspan=2 align="right")
+        input(type="button" value="Submit Score" onClick="submitScore();")
+  hr
+  h2 Submitted Scores
+  hr
+  p
+    table(border=1)
+      tr
+        if user[0].role == "admin"
+          th
+            p Score ID
+          th
+            p Game ID
+          th
+            p Reported By User ID
+        th
+          p Reported By
+        th
+          p Away Score
+        th
+          p Home Score
+        th
+          p Status
+      each score in scores
+        tr
+          if user[0].role == "admin"
+            td
+              p #{score.scoreID}
+            td
+              p #{score.gameID}
+            td
+              p #{score.reportedByUserID}
+          td
+            p #{score.displayName}
+          td
+            p #{score.awayScore}
+          td
+            p #{score.homeScore}
+          td
+            p #{score.status}
+          if user[0].role == "admin"
+            td
+              input(type="button" value="Approve" onClick="alert('Approve not hooked up yet.')")

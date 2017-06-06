@@ -63,4 +63,29 @@ router.get('/seasons/:year', function(req, res, next) {
   res.render('manage/seasons/year');
 });
 
+//
+// Scores
+//
+router.get('/games/:gameID', function(req, res, next) {
+  var gameID = req.params.gameID;
+
+  db.getGameByID(gameID, function(state, rows) {
+    console.log("State: " + state);
+    console.log("games: " + rows);
+    res.locals.games = rows;
+    //next();
+  });
+  db.getScoresByGameID(gameID, function(state, rows) {
+    console.log("State: " + state);
+    console.log("Scores: " + rows);
+    res.locals.scores = rows;
+    next();
+  });
+}, function(req, res, next) {
+  res.render('manage/games');
+});
+router.post('/games/:gameID', function(req, res, next) {
+
+});
+
 module.exports = router;

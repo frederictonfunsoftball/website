@@ -1,9 +1,14 @@
 var mysql = require('mysql');
 var pool;
 
-//var env = "local";
+var sha256 = require('js-sha256');
+//var passwordHashAndSalt = require("password-hash-and-salt");
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
+
+var env = "local";
 //var env = "openShiftDev";
-var env = "openShiftProd";
+//var env = "openShiftProd";
 
 if(env == "local")
 {
@@ -13,19 +18,19 @@ if(env == "local")
     user: 'softball',
     password: 'Ilike2playsoftball',
     database: 'softball',
-    debug: true
+    debug: false
   });
 }
 else if (env == "openShiftDev")
 {
   pool = mysql.createPool({
-    connectoinLimit: 100,
+    connectionLimit: 100,
     host: process.env.OPENSHIFT_MYSQL_DB_HOST,
     port: process.env.OPENSHIFT_MYSQL_DB_PORT,
     user: 'adminRP7uRiv',
     password: 'P53nEKwRX_tE',
     database: 'softballdev',
-    debug: true
+    debug: false
   });
 }
 else if (env == "openShiftProd")
@@ -40,6 +45,89 @@ else if (env == "openShiftProd")
     debug: false
   });
 }
+
+
+//
+// Login Queries
+//
+// Login
+exports.login = function(email, password, callback) {
+  var sql = "select userID, displayName, hash, email, role, active from users where email = '" + email + "' and active = 1;";
+  pool.getConnection(function(err, connection) {
+    if(err) {
+      console.log(err);
+      callback(true);
+      return;
+    }
+    console.log("Calling query 1");
+    connection.query(sql, function(err, rows) {
+      connection.release();
+      if(err) {
+        console.log(err);
+        callback(true);
+        return;
+      }
+      if(rows == "") {
+        console.log("No Users Found");
+        callback(true);
+        return;
+      }
+      console.log("Starting hash check");
+      console.log("rows: " + rows);
+      console.log("email: " + rows[0].email);
+      console.log("hash: " + rows[0].hash);
+      console.log("password: " + password);
+      console.log("hash: " + rows[0].hash);
+      console.log("active: " + rows[0].active);
+
+      bcrypt.compare(password, rows[0].hash, function(err, doesMatch) {
+        console.log ("err: " + err);
+        console.log ("doesMatch: " + doesMatch);
+        if(!doesMatch) {
+          console.log ("compare error");
+          callback(true);
+          return;
+          //throw new Error('Something went wrong!');
+        /*}
+        /*if(!verified) {
+          console.log ("invalid login");
+          callback(true);
+          return;
+          //console.log("Don't try! We got you!");*/
+        } else {
+          //console.log("The secret is...");
+          console.log("returning");
+          callback(false, rows);
+          return;
+        }
+      });
+    });
+  });
+};
+
+// Registration
+exports.loginRegister = function(displayName, email, teamID, password, callback) {
+  var salt = bcrypt.genSaltSync(saltRounds);
+  console.log("salt: " + salt);
+  var hash = bcrypt.hashSync(password, salt);
+  console.log("hash: " + hash);
+  var sql = "insert into users (displayName, email, hash) values ('" +displayName+ "', '" + email + "', '" + hash + "');"
+  console.log("SQL: " + sql);
+  pool.getConnection(function(err, connection) {
+    console.log("Calling query 1");
+    connection.query(sql, function(err, rows) {
+      if(err) {
+        console.log("Failed to register user\n\n");
+        console.log(err);
+        callback(true);
+        return;
+      } else {
+        console.log("Successfully registered user");
+        callback(false);
+      }
+    });
+  });
+};
 
 //
 // Seasons Queries
@@ -57,10 +145,10 @@ exports.getSeasonsAll = function(callback) {
       connection.release();
       if(err) {
         console.log(err);
-        callback(false);
+        callback(true);
         return;
       }
-      callback(true, rows);
+      callback(false, rows);
     });
   });
 };
@@ -222,7 +310,7 @@ exports.getTeamByID = function(teamID, callback) {
   pool.getConnection(function(err, connection) {
     if(err) {
       console.log(err);
-      callback(true);
+      callback(false);
       return;
     }
     connection.query(sql, function(err, rows) {
@@ -257,6 +345,7 @@ exports.getTeamNameByID = function(teamID, callback) {
     });
   });
 };
+
 
 //
 //
@@ -407,12 +496,58 @@ exports.getScheduleByMonth = function(month, callback) {
 // Standings Queries
 //
 exports.getStandings = function(callback) {
-  var sql = "select s.status as status, s.awayScore as awayScore, s.homeScore as homeScore, teamAway.teamID as awayID, teamAway.name as awayName, teamAway.displayID as awayDisplayID, teamHome.teamID as homeID, teamHome.name as homeName, teamHome.displayID as homeDisplayID from scores s, games g, teams teamAway, teams teamHome where s.gameID = g.gameID and g.awayTeamID = teamAway.teamID and g.homeTeamID = teamHome.teamID;";
+  var sql = "select s.status as status, s.awayScore as awayScore, s.homeScore as homeScore, teamAway.teamID as awayID, teamAway.name as awayName, teamAway.displayID as awayDisplayID, teamHome.teamID as homeID, teamHome.name as homeName, teamHome.displayID as homeDisplayID from scores s, games g, teams teamAway, teams teamHome, seasons where s.gameID = g.gameID and g.awayTeamID = teamAway.teamID and g.homeTeamID = teamHome.teamID and seasons.active = 1 and seasons.year = g.year;";
   console.log("calling sql");
   pool.getConnection(function(err, connection) {
     if(err) {
       console.log(err);
-      callback(true);
+      callback(false);
+      return;
+    }
+    connection.query(sql, function(err, rows) {
+      connection.release();
+      if(err) {
+        console.log(err);
+        callback(false);
+        return;
+      }
+      callback(true, rows);
+    });
+  });
+};
+
+//
+// Games Queries
+//
+exports.getGameByID = function(gameID, callback) {
+  var sql = "select g.gameID as gameID, g.year, g.awayTeamID as awayTeamID, tAway.name as awayName, tAway.displayID as awayDisplayID, g.homeTeamID as homeTeamID, tHome.name as homeName, tHome.displayID as homeDisplayID, g.fieldID, f.name, g.dateTime, g.status, g.type from games g, teams tAway, teams tHome, fields f where g.gameID = " + gameID + " and g.awayTeamID = tAway.teamID and g.homeTeamID = tHome.teamID and g.fieldID = f.fieldID;";
+  pool.getConnection(function(err, connection) {
+    if(err) {
+      console.log(err);
+      callback(false);
+      return;
+    }
+    connection.query(sql, function(err, rows) {
+      connection.release();
+      if(err) {
+        console.log(err);
+        callback(false);
+        return;
+      }
+      callback(true, rows);
+    });
+  });
+};
+
+//
+// Scores Queries
+//
+exports.getScoresByGameID = function(gameID, callback) {
+  var sql = "select s.scoreID, s.gameID, s.reportedByUserID, u.displayName, s.awayScore, s.homeScore, s.status from scores s, users u where gameID = " + gameID + " and s.reportedByUserID = u.userID;";
+  pool.getConnection(function(err, connection) {
+    if(err) {
+      console.log(err);
+      callback(false);
       return;
     }
     connection.query(sql, function(err, rows) {
