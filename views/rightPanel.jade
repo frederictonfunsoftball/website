@@ -15,13 +15,14 @@ p
   | Recent Scores:
 hr
 br
-p
-  | Upcoming Games:
-  hr
-  each nextGame in nextGames
-    div#recentGames
-      p #{nextGame.fieldName} - #{nextGame.dateTime}
-      p #{nextGame.awayName} vs. p #{nextGame.homeName}
+if(typeof user != 'undefined')
+  p
+    | Upcoming Games:
+    hr
+    each nextGame in nextGames
+      div#recentGames
+        p #{nextGame.fieldName} - #{nextGame.dateTime}
+        p #{nextGame.awayName} vs. p #{nextGame.homeName}
 p
   hr
   if(typeof user == 'undefined')
