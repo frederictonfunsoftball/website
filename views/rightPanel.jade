@@ -15,10 +15,11 @@ p
   | Recent Scores:
 hr
 br
-if(typeof user != 'undefined')
-  p
-    | Upcoming Games:
-    hr
+p
+  | Todays Games:
+  hr
+  if(typeof user != 'undefined')
+
     each nextGame in nextGames
       div#recentGames
         p #{nextGame.fieldName} - #{nextGame.dateTime}
@@ -28,6 +29,8 @@ p
   if(typeof user == 'undefined')
     a(href="/login") Login
   else
-    p Logged in as: <br> #{user[0].displayName}
-    input(type="hidden" id="user" value="#{user[0].displayName}")
+    p Logged in as: <br> #{user}
+    input(type="hidden" id="user" value="#{user}")
+    input(type="hidden" id="role" value="#{role}")
+    input(type="hidden" id="userID" value="#{userID}")
     a(href="/Logout") Logout

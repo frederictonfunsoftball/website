@@ -23,6 +23,7 @@ router.get('/', function(req, res, next) {
     console.log("first row: " + rows[0].id);
     res.locals.schedule = rows;
     res.locals.type = "All Games";
+
     next();
   });
 },

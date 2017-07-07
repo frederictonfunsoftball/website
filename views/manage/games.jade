@@ -2,6 +2,12 @@ extends ./../layout
 
 block append scripts
   script.
+    $( document ).ready(function() {
+      $.get("/api/manage/scores/#{games[0].gameID}", function(data, status) {
+        data = JSON.parse(data);
+        updateScores(data);
+      });
+    });
     function submitScore() {
       if ($.isNumeric($("#awayScore").val()) == false) {
         alert('Please enter a valid away score');
@@ -11,8 +17,48 @@ block append scripts
         alert('Please enter a valid home score');
         return 1;
       }
-      alert("/api/manage/games/#{games[0].gameID}/"+$("#awayScore").val()+"/"+$("#homeScore").val()+"/#{user[0].userID}");
-      //$.put("/api/manage/games/#{games[0].gameID}/"+$("#awayScore").val()+"/"+$("#homeScore").val());
+      $.get("/api/manage/scores/add/#{games[0].gameID}/"+$("#awayScore").val()+"/"+$("#homeScore").val()+"/"+#{userID}, function(data, status) {
+        data = JSON.parse(data);
+        updateScores(data);
+      });
+    };
+
+    function updateScores(data) {
+      $("#scoresTable").empty();
+      $("#scoresTable").append("<tr>")
+      if($("#role").val() == 'admin'){
+        $("#scoresTable").append("<td>ScoreID</td>");
+        $("#scoresTable").append("<td>GameID</td>");
+        $("#scoresTable").append("<td>Reported By ID</td>");
+      }
+
+      $("#scoresTable").append("<td>Reported By</td><td>Away Score</td><td>Home Score</td><td>Status</td><td></td></tr>");
+
+      for(i = 0; i < data.length; i++) {
+        newRow = "<tr>";
+        if($("#role").val() == 'admin'){
+          newRow += "<td>" + data[i].scoreID + "</td>";
+          newRow += "<td>" + data[i].gameID + "</td>";
+          newRow += "<td>" + data[i].reportedByUserID + "</td>";
+        }
+          newRow += "<td>" + data[i].displayName + "</td>";
+          newRow += "<td>" + data[i].awayScore + "</td>";
+          newRow += "<td>" + data[i].homeScore + "</td>";
+          newRow += "<td>" + data[i].status + "</td>";
+        if($("#role").val() == 'admin'){
+          newRow += "<td><input type='button' value='Approve' onClick='approveScore("+data[i].gameID+","+data[i].scoreID+")')</td>";
+        }
+        newRow += "</tr>";
+
+        $("#scoresTable").append(newRow);
+      }
+    };
+
+    function approveScore(gameID, scoreID) {
+      $.get("/api/manage/scores/approve/"+gameID+"/"+scoreID, function(data, status) {
+        data = JSON.parse(data);
+        updateScores(data);
+      });
     };
 
 block content
@@ -94,7 +140,7 @@ block content
   h2 Submitted Scores
   hr
   p
-    table(border=1)
+    table(border=1, id="scoresTable")
       tr
         if user[0].role == "admin"
           th

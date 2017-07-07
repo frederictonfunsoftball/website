@@ -18,6 +18,8 @@ var routeManage = require('./routes/manage');
 var routeAPI = require('./routes/api');
 var routeLogin = require('./routes/login');
 
+var fs = require('fs');
+
 var app = express();
 
 
@@ -41,6 +43,12 @@ app.use(session({
 
 app.use(function(req, res, next) {
   res.locals.user = req.session.user;
+  res.locals.role = req.session.role;
+  res.locals.userID = req.session.userID;
+
+  console.log("user: " + res.locals.user);
+  console.log("role: " + res.locals.role);
+  console.log("userID: " + res.locals.userID);
   next();
 })
 
@@ -102,63 +110,72 @@ app.use(function(err, req, res, next) {
   });
 });
 
+//letsencrypt
+var letsEncryptUrl = "ExGoethVCnO-mxEI5hfG6xjnu2-khvRo-ss82WmJq8k";
+var letsEncryptResponse = "ExGoethVCnO-mxEI5hfG6xjnu2-khvRo-ss82WmJq8k.JgTjBjCgGK2aJWo66vm_dFn5XBKVkUg2QBop45KUjZQ";
+app.get('/.well-known/acme-challenge/' + letsEncryptUrl, function (req, res) {
+  res.send(letsEncryptResponse);
+  res.end();
+})
+
 module.exports = app;
+
 
 
 var server = app.listen(port, ipaddress, function() {
   var host = server.address().address;
   var port = server.address().port;
 });
-/*
-var lex = require('greenlock-express').create({
-  server: 'staging',
-  //server: 'https://acme-staging.api.letsencrypt.org/directory',
-  //server: 'htps://acme-v01.api.letsencrypt.org/directory',
-  email: 'frederictonfunsoftball@gmail.com',
-  agreeTos: true,
 
-// If you wish to replace the default plugins, you may do so here
+
+// var lex = require('greenlock-express').create({
+//   server: 'staging',
+//   //server: 'https://acme-staging.api.letsencrypt.org/directory',
+//   //server: 'htps://acme-v01.api.letsencrypt.org/directory',
+//   email: 'frederictonfunsoftball@gmail.com',
+//   agreeTos: true,
 //
-  challenges: { 'http-01': require('le-challenge-fs').create({ webrootPath: '/tmp/acme-challenges' }) },
-  store: require('le-store-certbot').create({ webrootPath: '/tmp/acme-challenges' }),
-
-// You probably wouldn't need to replace the default sni handler
-// See https://git.daplie.com/Daplie/le-sni-auto if you think you do
-//, sni: require('le-sni-auto').create({})
-  approvedDomains: approveDomains
-  //approvedDomains: [ 'frederictonfunsoftball.com', '127.0.0.1' ]
-});//.listen(80, 443);
-
-function approveDomains(opts, certs, cb) {
-  // This is where you check your database and associated
-  // email addresses with domains and agreements and such
-
-
-  // The domains being approved for the first time are listed in opts.domains
-  // Certs being renewed are listed in certs.altnames
-  if (certs) {
-    opts.domains = certs.altnames;
-  }
-  else {
-    opts.domain = ['frederictonfunsoftball.com', '127.0.0.1'];
-    opts.email = 'frederictonfunsoftball@gmail.com';
-    opts.agreeTos = true;
-  }
-
-  // NOTE: you can also change other options such as `challengeType` and `challenge`
-  // opts.challengeType = 'http-01';
-  // opts.challenge = require('le-challenge-fs').create({});
-
-  cb(null, { options: opts, certs: certs });
-}
-
-// handles acme-challenge and redirects to https
-require('http').createServer(lex.middleware(require('redirect-https')())).listen(80, function () {
-  console.log("Listening for ACME http-01 challenges on", this.address());
-});
-
-// handles your app
-require('https').createServer(lex.httpsOptions, lex.middleware(app)).listen(port, function () {
-  console.log("Listening for ACME tls-sni-01 challenges and serve app on", this.address());
-});
-*/
+// // If you wish to replace the default plugins, you may do so here
+// //
+//   challenges: { 'http-01': require('le-challenge-fs').create({ webrootPath: '/tmp/acme-challenges' }) },
+//   store: require('le-store-certbot').create({ webrootPath: '/tmp/acme-challenges' }),
+//
+// // You probably wouldn't need to replace the default sni handler
+// // See https://git.daplie.com/Daplie/le-sni-auto if you think you do
+// //, sni: require('le-sni-auto').create({})
+//   approvedDomains: approveDomains
+//   //approvedDomains: [ 'frederictonfunsoftball.com', '127.0.0.1' ]
+// });//.listen(80, 443);
+//
+// function approveDomains(opts, certs, cb) {
+//   // This is where you check your database and associated
+//   // email addresses with domains and agreements and such
+//
+//
+//   // The domains being approved for the first time are listed in opts.domains
+//   // Certs being renewed are listed in certs.altnames
+//   if (certs) {
+//     opts.domains = certs.altnames;
+//   }
+//   else {
+//     opts.domain = ['frederictonfunsoftball.com', '127.0.0.1'];
+//     opts.email = 'frederictonfunsoftball@gmail.com';
+//     opts.agreeTos = true;
+//   }
+//
+//   // NOTE: you can also change other options such as `challengeType` and `challenge`
+//   // opts.challengeType = 'http-01';
+//   // opts.challenge = require('le-challenge-fs').create({});
+//
+//   cb(null, { options: opts, certs: certs });
+// }
+//
+// // handles acme-challenge and redirects to https
+// require('http').createServer(lex.middleware(require('redirect-https')())).listen(80, function () {
+//   console.log("Listening for ACME http-01 challenges on", this.address());
+// });
+//
+// // handles your app
+// require('https').createServer(lex.httpsOptions, lex.middleware(app)).listen(443, function () {
+//   console.log("Listening for ACME tls-sni-01 challenges and serve app on", this.address());
+// });

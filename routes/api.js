@@ -182,4 +182,76 @@ router.get('/standings', function(req, res, next) {
   });
 });
 
+router.get('/manage/scores/:gameID', function(req, res, next) {
+  var gameID = req.params.gameID;
+
+  db.getScoresByGameID(gameID, function(state, rows) {
+    console.log("state: " + state);
+    console.log("rows: " + rows);
+
+    var json = JSON.stringify(rows);
+    res.json(json);
+  });
+});
+
+router.get('/manage/scores/add/:gameID/:awayScore/:homeScore/:userID', function(req, res, next) {
+  console.log("in /manage/games/../../..");
+  var gameID = req.params.gameID;
+  //
+  // Set game to played
+  //
+  db.updateGameStatus(gameID, function(state, rows) {
+    console.log("state: " + state);
+    next();
+  });
+}, function (req, res, next) {
+  console.log("in /manage/games/../../.., second function");
+  var gameID = req.params.gameID;
+  var awayScore = req.params.awayScore;
+  var homeScore = req.params.homeScore;
+  var userID = req.params.userID;
+  //
+  // Insert score into Scores table
+  //
+  db.insertScore(gameID, awayScore, homeScore, userID, function(state, rows) {
+    console.log("state:" + state);
+    next();
+  });
+}, function (req, res) {
+  console.log("in /manage/games/../../.., third function");
+  var gameID = req.params.gameID;
+  //
+  // Return data for scores table on page
+  //
+  db.getScoresByGameID(gameID, function(state, rows) {
+    console.log("state: " + state);
+    console.log("rows: " + rows);
+
+    var json = JSON.stringify(rows);
+    console.log("Returning from /manage/games/../../..");
+    res.json(json);
+  });
+});
+
+router.get('/manage/scores/approve/:gameID/:scoreID', function(req, res, next) {
+  var gameID = req.params.gameID;
+  var scoreID = req.params.scoreID;
+  db.approveScore(gameID, scoreID, function(state, rows) {
+    next();
+  });
+}, function(req, res, next) {
+  var gameID = req.params.gameID;
+  //
+  // Return data for scores table on page
+  //
+  db.getScoresByGameID(gameID, function(state, rows) {
+    console.log("state: " + state);
+    console.log("rows: " + rows);
+
+    var json = JSON.stringify(rows);
+    console.log("stringify rows: " + json);
+    console.log("Returning from /manage/scores/approve/../..");
+    res.json(json);
+  });});
+
 module.exports = router;

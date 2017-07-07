@@ -44,10 +44,13 @@ router.post('/', function(req, res, next) {
         // sets a cookie with the user's info
         user = JSON.parse(user);
         console.log("\n\n");
-        console.log(user);
-        console.log(user[0]);
-        console.log(user[0].displayName);
-        req.session.user = user;
+        console.log("user: " + user);
+        console.log("user[0]: " + user[0]);
+        console.log("user[0].displayName: " + user[0].displayName);
+        console.log("user[0].userID: " + user[0].userID);
+        req.session.user = user[0].displayName;
+        req.session.role = user[0].role;
+        req.session.userID = user[0].userID;
         res.redirect('/');
       }
     } else {

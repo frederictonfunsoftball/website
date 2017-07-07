@@ -101,7 +101,7 @@ block append scripts
           currentLine += "<td align='center'>"+rows[i].awayScore+" - "+rows[i].homeScore;
         else
           currentLine += "<td align='center'>"+rows[i].status;
-        if($("#user").val() == 'Brad Bergeron')
+        if($("#role").val() == 'admin' || $("#role").val() == 'manager')
           currentLine += "<br><a href='/manage/games/"+rows[i].gameID+"'>Submit&nbsp;Score</a>";
         else {
           //currentLine += "tester";

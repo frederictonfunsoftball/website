@@ -6,9 +6,9 @@ var sha256 = require('js-sha256');
 var bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-//var env = "local";
+var env = "local";
 //var env = "openShiftDev";
-var env = "openShiftProd";
+//var env = "openShiftProd";
 
 if(env == "local")
 {
@@ -353,8 +353,9 @@ exports.getTeamNameByID = function(teamID, callback) {
 //
 // Get full Schedule
 exports.getScheduleActive = function(callback) {
-  var sql = "select g.gameID as gameID, s.year as year, awayT.teamID as awayTeamID, awayT.DisplayID as awayTeamDisplayID, awayT.name as awayTeamName, homeT.teamID as homeTeamID, homeT.displayID as homeTeamDisplayID, homeT.name as homeTeamName, f.fieldID as fieldID, f.name as fieldName, g.dateTime as 'dateTime', g.status as status, g.type as type, sc.awayScore, sc.homeScore from games g left outer join scores sc on g.gameID = sc.gameID, seasons s, teams awayT, teams homeT, fields f where g.year = s.year and g.awayTeamID = awayT.teamID and g.homeTeamID = homeT.teamID and g.fieldID = f.fieldID and s.active = true order by g.dateTime";
-pool.getConnection(function(err, connection) {
+  var sql = "select g.gameID as gameID, s.year as year, awayT.teamID as awayTeamID, awayT.DisplayID as awayTeamDisplayID, awayT.name as awayTeamName, homeT.teamID as homeTeamID, homeT.displayID as homeTeamDisplayID, homeT.name as homeTeamName, f.fieldID as fieldID, f.name as fieldName, g.dateTime as 'dateTime', g.status as status, g.type as type, sc.awayScore, sc.homeScore from games g left outer join (select * from scores where status = 'approved') sc on g.gameID = sc.gameID, seasons s, teams awayT, teams homeT, fields f where g.year = s.year and g.awayTeamID = awayT.teamID and g.homeTeamID = homeT.teamID and g.fieldID = f.fieldID and s.active = true order by g.dateTime";
+  console.log(sql);
+  pool.getConnection(function(err, connection) {
     if(err) {
       console.log(err);
       callback(true);
@@ -558,6 +559,89 @@ exports.getScoresByGameID = function(gameID, callback) {
         return;
       }
       callback(true, rows);
+    });
+  });
+};
+
+//
+// Manage API Functions
+//
+exports.updateGameStatus = function(gameID, callback) {
+  var sql = "update games set status = 'played' where gameID = " + gameID + ";";
+  pool.getConnection(function(err, connection) {
+    if(err) {
+      console.log(err);
+      callback(false);
+      return;
+    }
+    connection.query(sql, function(err, rows) {
+      if(err) {
+        console.log(err);
+        callback(false);
+        return;
+      }
+      callback(true, rows);
+    });
+  });
+};
+exports.insertScore = function(gameID, awayScore, homeScore, userID, callback) {
+  console.log("inside db.insertScore");
+  var sql = "insert into scores (gameID, reportedByUserID, awayScore, homeScore, status) values ("+gameID+", "+userID+", "+awayScore+", "+homeScore+", 'pending');";
+  console.log("SQL: " + sql);
+  pool.getConnection(function(err, connection) {
+    if(err) {
+      console.log(err);
+      callback(false);
+      return;
+    }
+    connection.query(sql, function(err, rows) {
+      if (err) {
+        console.log(err);
+        callback(false);
+        return;
+      }
+      callback(true, rows);
+    });
+  });
+};
+exports.approveScore = function(gameID, scoreID, callback) {
+  console.log("gameID: " + gameID);
+  console.log("scoreID: " + scoreID);
+
+  var sql1 = "update scores set status = 'pending' where gameID = " + gameID + ";";
+  console.log("sql1: " + sql1);
+
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      callback(false);
+      return;
+    }
+    connection.query(sql1, function(err, rows) {
+      if (err) {
+        callback(false);
+        return;
+      }
+
+      console.log(err);
+      console.log(rows);
+
+      var sql = "update scores set status = 'approved' where scoreID = " + scoreID + ";";
+      console.log("SQL: " + sql);
+      pool.getConnection(function(err, connection) {
+        if(err) {
+          console.log(err);
+          callback(false);
+          return;
+        }
+        connection.query(sql, function(err, rows) {
+          if (err) {
+            console.log(err);
+            callback(false);
+            return;
+          }
+          callback(true, rows);
+        });
+      });
     });
   });
 };
