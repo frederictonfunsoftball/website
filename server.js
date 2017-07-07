@@ -18,8 +18,6 @@ var routeManage = require('./routes/manage');
 var routeAPI = require('./routes/api');
 var routeLogin = require('./routes/login');
 
-var fs = require('fs');
-
 var app = express();
 
 
@@ -28,6 +26,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 function requireHTTPS(req, res, next) {
+  console.log("req.secure: " + req.secure);
+  console.log("req.get('host'): " + req.get('host'); 
+  console.log("req.url: " + req.url);
   if (!req.secure) {
     return res.redirect('https://' + req.get('host') + req.url);
   }
