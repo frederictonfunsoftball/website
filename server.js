@@ -79,7 +79,14 @@ app.use('/manage', routeManage);
 // Database
 app.use('/api', routeAPI);
 
-
+//letsencrypt
+var letsEncryptUrl = "ExGoethVCnO-mxEI5hfG6xjnu2-khvRo-ss82WmJq8k";
+var letsEncryptResponse = "ExGoethVCnO-mxEI5hfG6xjnu2-khvRo-ss82WmJq8k.JgTjBjCgGK2aJWo66vm_dFn5XBKVkUg2QBop45KUjZQ";
+app.get('/.well-known/acme-challenge/' + letsEncryptUrl, function (req, res) {
+  console.log("handling acme challenge");
+  res.send(letsEncryptResponse);
+  res.end();
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -109,15 +116,6 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
-//letsencrypt
-var letsEncryptUrl = "ExGoethVCnO-mxEI5hfG6xjnu2-khvRo-ss82WmJq8k";
-var letsEncryptResponse = "ExGoethVCnO-mxEI5hfG6xjnu2-khvRo-ss82WmJq8k.JgTjBjCgGK2aJWo66vm_dFn5XBKVkUg2QBop45KUjZQ";
-app.get('/.well-known/acme-challenge/' + letsEncryptUrl, function (req, res) {
-  console.log("handling acme challenge");
-  res.send(letsEncryptResponse);
-  res.end();
-})
 
 module.exports = app;
 
