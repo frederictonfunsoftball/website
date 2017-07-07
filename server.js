@@ -27,6 +27,14 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+function requireHTTPS(req, res, next) {
+  if (!req.secure) {
+    return res.redirect('https://' + req.get('host') + req.url);
+  }
+  next();
+};
+app.use(requireHTTPS);
+
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
@@ -51,14 +59,6 @@ app.use(function(req, res, next) {
   //console.log("userID: " + res.locals.userID);
   next();
 })
-
-function requireHTTPS(req, res, next) {
-  if (!req.secure) {
-    return res.redirect('https://' + req.get('host') + req.url);
-  }
-  next();
-};
-app.use(requireHTTPS);
 
 // general
 app.use('/', routeIndex);
