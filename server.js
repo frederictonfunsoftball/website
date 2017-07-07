@@ -46,11 +46,19 @@ app.use(function(req, res, next) {
   res.locals.role = req.session.role;
   res.locals.userID = req.session.userID;
 
-  console.log("user: " + res.locals.user);
-  console.log("role: " + res.locals.role);
-  console.log("userID: " + res.locals.userID);
+  //console.log("user: " + res.locals.user);
+  //console.log("role: " + res.locals.role);
+  //console.log("userID: " + res.locals.userID);
   next();
 })
+
+function requireHTTPS(req, res, next) {
+  if (!req.secure) {
+    return res.redirect('https://' + req.get('host') + req.url);
+  }
+  next();
+};
+app.use(requireHTTPS);
 
 // general
 app.use('/', routeIndex);
