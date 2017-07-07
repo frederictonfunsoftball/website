@@ -114,6 +114,7 @@ app.use(function(err, req, res, next) {
 var letsEncryptUrl = "ExGoethVCnO-mxEI5hfG6xjnu2-khvRo-ss82WmJq8k";
 var letsEncryptResponse = "ExGoethVCnO-mxEI5hfG6xjnu2-khvRo-ss82WmJq8k.JgTjBjCgGK2aJWo66vm_dFn5XBKVkUg2QBop45KUjZQ";
 app.get('/.well-known/acme-challenge/' + letsEncryptUrl, function (req, res) {
+  console.log("handling acme challenge");
   res.send(letsEncryptResponse);
   res.end();
 })
