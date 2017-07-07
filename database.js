@@ -6,9 +6,9 @@ var sha256 = require('js-sha256');
 var bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-var env = "local";
+//var env = "local";
 //var env = "openShiftDev";
-//var env = "openShiftProd";
+var env = "openShiftProd";
 
 if(env == "local")
 {
