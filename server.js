@@ -27,7 +27,7 @@ app.set('view engine', 'jade');
 
 function requireHTTPS(req, res, next) {
   console.log("req.secure: " + req.secure);
-  console.log("req.get('host'): " + req.get('host'); 
+  console.log("req.get('host'): " + req.get('host')); 
   console.log("req.url: " + req.url);
   if (!req.secure) {
     return res.redirect('https://' + req.get('host') + req.url);
