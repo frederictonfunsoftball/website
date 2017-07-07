@@ -27,10 +27,10 @@ app.set('view engine', 'jade');
 
 function requireHTTPS(req, res, next) {
   //console.log("req.secure: " + req.secure);
-  console.log("req.get('x-forwarded-proto'): " + req.get('x-forwarded-proto'));
+  //console.log("req.get('x-forwarded-proto'): " + req.get('x-forwarded-proto'));
   //console.log("req.get('host'): " + req.get('host')); 
   //console.log("req.url: " + req.url);
-  if (!req.get('x-forwarded-proto')) {
+  if (req.get('x-forwarded-proto') == 'http') {
     return res.redirect('https://' + req.get('host') + req.url);
   }
   next();
